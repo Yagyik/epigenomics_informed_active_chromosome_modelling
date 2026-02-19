@@ -1,0 +1,46 @@
+{
+  "pipeline_modes": {
+    "full": [
+      "chrom_props",
+      "ipd_hic_basic",
+      "iad_rnaseq_hicmask",
+      "expected_mat",
+      "init_positions_ell",
+      "prep_surf_meshes",
+      "dediff_simulation",
+      "anneal_simulation"
+    ],
+    "test": [
+      "dediff_simulation_test"
+    ]
+  },
+  "naming": {
+    "global_suffix_template": "_in{inSuffix}_{pref}_Tp{Tp}",
+    "set_folder_template": "Set_{set}",
+    "starts_dir_template": "{inSuffix}_{pref}_Tp{Tp}_starts",
+    "set_main_dir_template": "Set_{set}_in{inSuffix}_{pref}_Tp{Tp}",
+    "start_file_template": "Set_{set}_in{inSuffix}_{pref}_Tp{Tp}/testWhole_46c-SimStart_{inSuffix}_{set}.dat",
+    "intmat_file_template": "Set_{set}_in{inSuffix}_{pref}_Tp{Tp}/testWhole_46c-IntMat_{inSuffix}_{set}.dat",
+    "constraints_file_template": "Set_{set}_in{inSuffix}_{pref}_Tp{Tp}/testWhole_46c-constraints_{inSuffix}_{set}.dat"
+  },
+  "chrom_props": {
+    "inactive_cluster_label": 1,
+    "decision_matrix_marks": [
+      "CTCF",
+      "RAD21"
+    ],
+    "chr23_default_fracs": [
+      0.5,
+      0.3,
+      0.1
+    ],
+    "cluster_table_csv": "genChromProps/cistromic_cluster_three_type_production.csv"
+  },
+  "ipd_hic": {
+    "zero_out_last_chromosome": true
+  },
+  "iad_rnaseq_hicmask": {
+    "rna_threshold": -0.0,
+    "plot_file": "genConstraintsInteractions/IAD_filtRNAseq_HiCmask.png"
+  }
+}

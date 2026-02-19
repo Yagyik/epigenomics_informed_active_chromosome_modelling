@@ -1,0 +1,23 @@
+{
+  "pref": "ell",
+  "in_suffix": "3",
+  "tp": "0.0001",
+  "nset": 16,
+  "out_prefix": "testWhole_46c",
+  "out_dir": "prepSurf_perturb",
+  "epsblob": 8.0,
+  "epsij_scale": 8.0,
+  "surfself": 4.0,
+  "sigdeli": 0.001,
+  "sigactdeli": 0.02,
+  "sigactdelf": 0.001,
+  "temi": 0.001,
+  "lmni": 0.1,
+  "surf_diffu": 0.001,
+  "sgactau": 2.0,
+  "actscalei": 0.45,
+  "init_read": 0,
+  "tot_run": 0,
+  "n_surf_cyc_points": 1000,
+  "expected_mat_file_key": "expected_mat"
+}

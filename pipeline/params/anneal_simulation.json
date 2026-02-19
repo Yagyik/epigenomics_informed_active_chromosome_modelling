@@ -1,0 +1,55 @@
+{
+  "job_name": "cm_anneal",
+  "partition": "daily",
+  "nodes": 4,
+  "ntasks": 176,
+  "time": "23:55:00",
+  "output": "J.%j.out",
+  "error": "J.%j.err",
+  "pref": "ell",
+  "in_suffix": "3",
+  "tp": "0.0001",
+  "set_id": 1,
+  "start": 0,
+  "start_anneal": 0,
+  "simlength": 200000,
+  "submit_script_name": "submit_anneal_generated.sbatch",
+  "submit": false,
+  "compiler": "mpicc",
+  "binary_name": "mdChrom_batch_gr.exe",
+  "srun_per_task": true,
+  "run_script": "run_46ch_script_usePrepped_reprog.sh",
+  "t_sim": 0.0001,
+  "sigdel": 0.001,
+  "lmn": 0.1,
+  "sfdf": 0.001,
+  "sgactau": 2,
+  "epsblob": 8.0,
+  "sweep": {
+    "actscale": [
+      0.0,
+      0.04,
+      0.08,
+      0.12,
+      0.16,
+      0.2,
+      0.25,
+      0.3,
+      0.4,
+      0.7,
+      1.0
+    ],
+    "sigactdel": [
+      0.001,
+      0.005,
+      0.01,
+      0.02
+    ],
+    "epsij_mult": [
+      0.4,
+      0.5,
+      0.6,
+      0.75
+    ]
+  }
+}

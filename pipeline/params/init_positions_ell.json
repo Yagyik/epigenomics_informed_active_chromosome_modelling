@@ -1,0 +1,14 @@
+{
+  "pref": "ell",
+  "in_suffix": "3",
+  "tp": "0.0001",
+  "nset": 16,
+  "temperature": 0.0001,
+  "eps": 10.0,
+  "ella": 9,
+  "ellb": 6,
+  "ellc": 2.5,
+  "MCiter": 4000000,
+  "constraint_freq": 0.8,
+  "IPD_scale": 1.0
+}

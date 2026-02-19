@@ -1,0 +1,193 @@
+{
+  "core_config": "core_config.json",
+  "paths": {
+    "project_root": "..",
+    "sequence_data_dir": "sequence_data",
+    "hic_las_data_dir": "HiC_LAS_data",
+    "chromwise_unorm_dir": "sequence_data/epigenome_chromwise_unorm_data",
+    "hic_pairwise_las_dir": "HiC_LAS_data/functional_chromosome_interactions-master/inter_chromosome_250kb_imr90/las_regions/avg_7.941_iters_100",
+    "hic_pairwise_filt_dir": "HiC_LAS_data/functional_chromosome_interactions-master/inter_chromosome_250kb_imr90/filt",
+    "chrom_props_plots_dir": "genChromProps/production_plots",
+    "stage_cache_dir": "pipeline/stage_cache",
+    "processed_data_dir": "processed_HiC_epigenomic_data"
+  },
+  "files": {
+    "features_matrix_norm": "sequence_data/features_matrix_all_loci_norm.csv",
+    "chromosome_sizes": "sequence_data/chromosome_sizes.sizes",
+    "hic_experiment_matrix": "HiC_LAS_data/HiC_expt_mat.dat",
+    "chrom_props": "{processed_data_dir}/ChromPartitionProps.dat",
+    "ipd_hic_basic": "{processed_data_dir}/IPD.dat",
+    "iad_rnaseq_hicmask": "{processed_data_dir}/IAD.dat",
+    "init_positions_chrom_props_input": "{processed_data_dir}/ChromPartitionProps.dat",
+    "init_positions_iad_input": "{processed_data_dir}/IAD.dat",
+    "init_positions_ipd_input": "{processed_data_dir}/IPD.dat",
+    "constraints_example": "analysis/testWhole_46c-constraints.dat",
+    "expected_mat": "{processed_data_dir}/ConstraintsVector.dat"
+  },
+  "stage_params_files": {
+    "init_positions_ell": "pipeline/params/init_positions_ell.json",
+    "init_positions_sph": "pipeline/params/init_positions_sph.json",
+    "prep_surf_meshes": "pipeline/params/prep_surf_meshes_ell.json",
+    "prep_surf_meshes_ell": "pipeline/params/prep_surf_meshes_ell.json",
+    "prep_surf_meshes_sph": "pipeline/params/prep_surf_meshes_sph.json",
+    "dediff_simulation": "pipeline/params/dediff_simulation.json",
+    "anneal_simulation": "pipeline/params/anneal_simulation.json",
+    "dediff_simulation_test": "pipeline/params/dediff_simulation_test.json"
+  },
+  "stages": {
+    "chrom_props": {
+      "script": "genChromProps/make_chrom_props.py",
+      "required_inputs": [
+        "sequence_data/features_matrix_all_loci_norm.csv",
+        "sequence_data/epigenome_chromwise_unorm_data/features_matrix_chr1.csv ... features_matrix_chr22.csv"
+      ],
+      "required_outputs": [
+        "processed_HiC_epigenomic_data/ChromPartitionProps.dat",
+        "genChromProps/production_plots/decision_matrix.png",
+        "genChromProps/production_plots/lmnb1_subcluster_hist.png",
+        "genChromProps/production_plots/h3k9me3_hist.png",
+        "genChromProps/production_plots/rnaseq_hist.png",
+        "genChromProps/production_plots/clustermap.png"
+      ]
+    },
+    "ipd_hic_basic": {
+      "script": "genConstraintsInteractions/make_ipd.py",
+      "required_inputs": [
+        "HiC_LAS_data/HiC_expt_mat.dat",
+        "sequence_data/chromosome_sizes.sizes",
+        "processed_HiC_epigenomic_data/ChromPartitionProps.dat"
+      ],
+      "required_outputs": [
+        "processed_HiC_epigenomic_data/IPD.dat"
+      ]
+    },
+    "iad_rnaseq_hicmask": {
+      "script": "genConstraintsInteractions/make_iad.py",
+      "required_inputs": [
+        "sequence_data/features_matrix_all_loci_norm.csv",
+        "sequence_data/chromosome_sizes.sizes",
+        "HiC_LAS_data/functional_chromosome_interactions-master/inter_chromosome_250kb_imr90/las_regions/avg_7.941_iters_100",
+        "HiC_LAS_data/functional_chromosome_interactions-master/inter_chromosome_250kb_imr90/filt"
+      ],
+      "required_outputs": [
+        "processed_HiC_epigenomic_data/IAD.dat",
+        "genConstraintsInteractions/IAD_filtRNAseq_HiCmask.png"
+      ]
+    },
+    "expected_mat": {
+      "script": "genInitPositions/vectorizeConstraints.py",
+      "required_inputs": [
+        "analysis/testWhole_46c-constraints.dat"
+      ],
+      "required_outputs": [
+        "processed_HiC_epigenomic_data/ConstraintsVector.dat"
+      ]
+    },
+    "init_positions_ell": {
+      "script": "genInitPositions/run_genStart_ell.py",
+      "required_inputs": [
+        "processed_HiC_epigenomic_data/ChromPartitionProps.dat (6 columns: npatch mass chrom_type ec_frac hc_frac lamin_frac)",
+        "processed_HiC_epigenomic_data/IPD.dat",
+        "processed_HiC_epigenomic_data/IAD.dat"
+      ],
+      "required_outputs": [
+        "genSurfMeshes/Set_{set}_in{inSuffix}_{pref}_Tp{Tp}/testWhole_46c-SimStart_{inSuffix}_{set}.dat",
+        "genSurfMeshes/Set_{set}_in{inSuffix}_{pref}_Tp{Tp}/testWhole_46c-IntMat_{inSuffix}_{set}.dat",
+        "genSurfMeshes/Set_{set}_in{inSuffix}_{pref}_Tp{Tp}/testWhole_46c-constraints_{inSuffix}_{set}.dat"
+      ]
+    },
+    "init_positions_sph": {
+      "script": "genInitPositions/run_genStart_sph.py",
+      "required_inputs": [
+        "processed_HiC_epigenomic_data/ChromPartitionProps.dat (6 columns: npatch mass chrom_type ec_frac hc_frac lamin_frac)",
+        "processed_HiC_epigenomic_data/IPD.dat",
+        "processed_HiC_epigenomic_data/IAD.dat"
+      ],
+      "required_outputs": [
+        "genSurfMeshes/Set_{set}_in{inSuffix}_{pref}_Tp{Tp}/testWhole_46c-SimStart_{inSuffix}_{set}.dat",
+        "genSurfMeshes/Set_{set}_in{inSuffix}_{pref}_Tp{Tp}/testWhole_46c-IntMat_{inSuffix}_{set}.dat",
+        "genSurfMeshes/Set_{set}_in{inSuffix}_{pref}_Tp{Tp}/testWhole_46c-constraints_{inSuffix}_{set}.dat"
+      ]
+    },
+    "prep_surf_meshes": {
+      "script": "genSurfMeshes/run_prepSurf_ell.py",
+      "required_inputs": [
+        "genSurfMeshes/Set_{set}_in{inSuffix}_{pref}_Tp{Tp}/testWhole_46c-SimStart_{inSuffix}_{set}.dat",
+        "genSurfMeshes/Set_{set}_in{inSuffix}_{pref}_Tp{Tp}/testWhole_46c-IntMat_{inSuffix}_{set}.dat",
+        "genSurfMeshes/Set_{set}_in{inSuffix}_{pref}_Tp{Tp}/testWhole_46c-constraints_{inSuffix}_{set}.dat",
+        "processed_HiC_epigenomic_data/ConstraintsVector.dat"
+      ],
+      "required_outputs": [
+        "genSurfMeshes/Set_{set}_in{inSuffix}_{pref}_Tp{Tp}/prepSurf_perturb/Conf-finalfixedSurfFile_ea*_eb*_ec*_5.dat",
+        "genSurfMeshes/Set_{set}_in{inSuffix}_{pref}_Tp{Tp}/prepSurf_perturb/Conf-SurfCyc_ea*_eb*_ec*_5.dat"
+      ]
+    },
+    "prep_surf_meshes_ell": {
+      "script": "genSurfMeshes/run_prepSurf_ell.py",
+      "required_inputs": [
+        "genSurfMeshes/Set_{set}_in{inSuffix}_{pref}_Tp{Tp}/testWhole_46c-SimStart_{inSuffix}_{set}.dat",
+        "genSurfMeshes/Set_{set}_in{inSuffix}_{pref}_Tp{Tp}/testWhole_46c-IntMat_{inSuffix}_{set}.dat",
+        "genSurfMeshes/Set_{set}_in{inSuffix}_{pref}_Tp{Tp}/testWhole_46c-constraints_{inSuffix}_{set}.dat",
+        "processed_HiC_epigenomic_data/ConstraintsVector.dat"
+      ],
+      "required_outputs": [
+        "genSurfMeshes/Set_{set}_in{inSuffix}_{pref}_Tp{Tp}/prepSurf_perturb/Conf-finalfixedSurfFile_ea*_eb*_ec*_5.dat",
+        "genSurfMeshes/Set_{set}_in{inSuffix}_{pref}_Tp{Tp}/prepSurf_perturb/Conf-SurfCyc_ea*_eb*_ec*_5.dat"
+      ]
+    },
+    "prep_surf_meshes_sph": {
+      "script": "genSurfMeshes/run_prepSurf_sph.py",
+      "required_inputs": [
+        "genSurfMeshes/Set_{set}_in{inSuffix}_{pref}_Tp{Tp}/testWhole_46c-SimStart_{inSuffix}_{set}.dat",
+        "genSurfMeshes/Set_{set}_in{inSuffix}_{pref}_Tp{Tp}/testWhole_46c-IntMat_{inSuffix}_{set}.dat",
+        "genSurfMeshes/Set_{set}_in{inSuffix}_{pref}_Tp{Tp}/testWhole_46c-constraints_{inSuffix}_{set}.dat",
+        "processed_HiC_epigenomic_data/ConstraintsVector.dat"
+      ],
+      "required_outputs": [
+        "genSurfMeshes/Set_{set}_in{inSuffix}_{pref}_Tp{Tp}/prepSurf_perturb/Conf-finalfixedSurfFile_ea*_eb*_ec*_5.dat",
+        "genSurfMeshes/Set_{set}_in{inSuffix}_{pref}_Tp{Tp}/prepSurf_perturb/Conf-SurfCyc_ea*_eb*_ec*_5.dat"
+      ]
+    },
+    "dediff_simulation": {
+      "script": "dediffSimulation/genSlurm_submission_script.py",
+      "required_inputs": [
+        "genSurfMeshes/Set_{set}_in{inSuffix}_{pref}_Tp{Tp}/prepSurf_perturb/Conf-finalfixedSurfFile_ea*_eb*_ec*_5.dat",
+        "genSurfMeshes/Set_{set}_in{inSuffix}_{pref}_Tp{Tp}/prepSurf_perturb/Conf-SurfCyc_ea*_eb*_ec*_5.dat",
+        "genSurfMeshes/Set_{set}_in{inSuffix}_{pref}_Tp{Tp}/testWhole_46c-SimStart_{inSuffix}_{set}.dat",
+        "genSurfMeshes/Set_{set}_in{inSuffix}_{pref}_Tp{Tp}/testWhole_46c-IntMat_{inSuffix}_{set}.dat",
+        "genSurfMeshes/Set_{set}_in{inSuffix}_{pref}_Tp{Tp}/testWhole_46c-constraints_{inSuffix}_{set}.dat",
+        "processed_HiC_epigenomic_data/ConstraintsVector.dat"
+      ],
+      "required_outputs": [
+        "Set_{set}_in{inSuffix}_{pref}_Tp{Tp}/{run_dir}/Conf*.dat"
+      ]
+    },
+    "anneal_simulation": {
+      "script": "annealSimulation/genSlurm_submission_script.py",
+      "required_inputs": [
+        "genSurfMeshes/Set_{set}_in{inSuffix}_{pref}_Tp{Tp}/prepSurf_perturb/Conf-finalfixedSurfFile_ea*_eb*_ec*_5.dat",
+        "genSurfMeshes/Set_{set}_in{inSuffix}_{pref}_Tp{Tp}/prepSurf_perturb/Conf-SurfCyc_ea*_eb*_ec*_5.dat",
+        "genSurfMeshes/Set_{set}_in{inSuffix}_{pref}_Tp{Tp}/testWhole_46c-SimStart_{inSuffix}_{set}.dat",
+        "genSurfMeshes/Set_{set}_in{inSuffix}_{pref}_Tp{Tp}/testWhole_46c-IntMat_{inSuffix}_{set}.dat",
+        "genSurfMeshes/Set_{set}_in{inSuffix}_{pref}_Tp{Tp}/testWhole_46c-constraints_{inSuffix}_{set}.dat",
+        "processed_HiC_epigenomic_data/ConstraintsVector.dat"
+      ],
+      "required_outputs": [
+        "Set_{set}_in{inSuffix}_{pref}_Tp{Tp}/{run_dir}/Conf*.dat"
+      ]
+    },
+    "dediff_simulation_test": {
+      "script": "run_test.py",
+      "required_inputs": [
+        "dediffSimulation/Set_{set}_in{inSuffix}_{pref}_Tp{Tp}/prepSurf_perturb/Conf-finalfixedSurfFile_ea*_eb*_ec*_5.dat",
+        "dediffSimulation/Set_{set}_in{inSuffix}_{pref}_Tp{Tp}/prepSurf_perturb/Conf-SurfCyc_ea*_eb*_ec*_5.dat",
+        "dediffSimulation/{inSuffix}_{pref}_Tp{Tp}_starts/testWhole_46c-SimStart_{inSuffix}_{set}.dat",
+        "dediffSimulation/{inSuffix}_{pref}_Tp{Tp}_starts/testWhole_46c-IntMat_{inSuffix}_{set}.dat",
+        "processed_HiC_epigenomic_data/ConstraintsVector.dat"
+      ],
+      "required_outputs": [
+        "dediffSimulation/Set_{set}_in{inSuffix}_{pref}_Tp{Tp}/{run_dir}/Conf*.dat"
+      ]
+    }
+  }
+}

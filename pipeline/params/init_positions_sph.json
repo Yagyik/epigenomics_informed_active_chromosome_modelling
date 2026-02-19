@@ -1,0 +1,14 @@
+{
+  "pref": "sph",
+  "in_suffix": "sph3",
+  "tp": "0.2",
+  "nset": 16,
+  "temperature": 0.2,
+  "eps": 10.0,
+  "ella": 5.5,
+  "ellb": 5.5,
+  "ellc": 5.5,
+  "MCiter": 2000000,
+  "constraint_freq": 0.8,
+  "IPD_scale": 1.0
+}
