@@ -1,0 +1,28 @@
+name: Mirror personal -> group
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Push main and tags to group repo
+        env:
+          GROUP_MIRROR_PAT: ${{ secrets.GROUP_MIRROR_PAT }}
+        run: |
+          test -n "${GROUP_MIRROR_PAT}" || (echo "Missing GROUP_MIRROR_PAT" && exit 1)
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git remote add group "https://x-access-token:${GROUP_MIRROR_PAT}@github.com/GVS-Lab/epigenomics_informed_active_chromosome_modelling.git"
+          git push --force group refs/heads/main:refs/heads/main
+          git push --force group --tags
